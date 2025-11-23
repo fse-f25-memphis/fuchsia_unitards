@@ -1,0 +1,17 @@
+<h1>Contact Support</h1>
+
+<p>Tell us what’s going on with your unitard order, trade, or account.</p>
+
+<%= form_with model: @ticket, url: support_tickets_path, local: true do |f| %>
+  <div class="mb-3">
+    <%= f.label :subject %>
+    <%= f.text_field :subject, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :message %>
+    <%= f.text_area :message, rows: 5, class: "form-control" %>
+  </div>
+
+  <%= f.submit "Submit Ticket", class: "btn btn-primary" %>
+<% end %>

@@ -1,0 +1,46 @@
+<h1>Order #<%= @order.id %></h1>
+
+<p>
+  <strong>Placed on:</strong> <%= @order.created_at.strftime("%B %d, %Y") %><br>
+  <strong>Status:</strong> <span class="badge bg-secondary"><%= @order.status %></span><br>
+  <strong>Total:</strong> <%= number_to_currency(@order.total) %>
+</p>
+
+<% if @order.gift? %>
+  <div class="alert alert-info">
+    🎁 This order was sent as a gift to
+    <strong><%= @order.recipient_name %></strong>
+    (<%= @order.recipient_email %>).
+    <% if @order.gift_message.present? %>
+      <br>
+      <em>"<%= @order.gift_message %>"</em>
+    <% end %>
+  </div>
+<% end %>
+
+<h3>Items</h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Unitard</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @order.order_items.includes(:unitard).each do |item| %>
+      <tr>
+        <td><%= link_to item.unitard.name, item.unitard %></td>
+        <td><%= item.quantity %></td>
+        <td><%= number_to_currency(item.price) %></td>
+        <td><%= number_to_currency(item.price * item.quantity) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p class="mt-3">
+  <%= link_to "Back to Orders", orders_path, class: "btn btn-link" %>
+</p>

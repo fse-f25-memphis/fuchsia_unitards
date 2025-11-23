@@ -1,0 +1,34 @@
+<h1>Trade Requests</h1>
+
+<p>
+  <%= link_to "Propose New Trade", new_trade_path, class: "btn btn-primary mb-3" %>
+</p>
+
+<% if @trades.any? %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Trade #</th>
+        <th>Proposer</th>
+        <th>Recipient</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @trades.each do |trade| %>
+        <tr>
+          <td><%= trade.id %></td>
+          <td><%= trade.proposer.name.presence || trade.proposer.email %></td>
+          <td><%= trade.recipient.name.presence || trade.recipient.email %></td>
+          <td><span class="badge bg-secondary"><%= trade.status %></span></td>
+          <td><%= trade.created_at.strftime("%Y-%m-%d") %></td>
+          <td><%= link_to "View", trade_path(trade), class: "btn btn-outline-primary btn-sm" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>You have no trade activity yet.</p>
+<% end %>

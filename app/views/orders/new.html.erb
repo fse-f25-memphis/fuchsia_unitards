@@ -1,0 +1,47 @@
+<h1>Checkout</h1>
+
+<p>Confirm your details to complete the order.</p>
+
+<%= form_with model: @order, local: true do |f| %>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4>Gift Options</h4>
+
+      <div class="form-check mb-2">
+        <%= f.check_box :gift, class: "form-check-input", id: "gift-check" %>
+        <%= f.label :gift, "Send this order as a gift", class: "form-check-label" %>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <%= f.label :recipient_name, "Recipient Name" %>
+          <%= f.text_field :recipient_name, class: "form-control" %>
+        </div>
+        <div class="col-md-6 mb-3">
+          <%= f.label :recipient_email, "Recipient Email" %>
+          <%= f.email_field :recipient_email, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :gift_message, "Gift Message" %>
+        <%= f.text_area :gift_message, rows: 3, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4>Review Items</h4>
+      <% @cart.cart_items.includes(:unitard).each do |item| %>
+        <p>
+          <strong><%= item.unitard.name %></strong>
+          × <%= item.quantity %> –
+          <%= number_to_currency(item.unitard.price * item.quantity) %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+  <%= f.submit "Place Order", class: "btn btn-primary" %>
+<% end %>

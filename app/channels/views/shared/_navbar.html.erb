@@ -1,0 +1,72 @@
+<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+    <%= link_to "Fuchsia", root_path, class: "navbar-brand" %>
+
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <%= link_to "Browse Unitards", unitards_path, class: "nav-link" %>
+        </li>
+
+        <li class="nav-item">
+          <%= link_to "Trade Post", trades_path, class: "nav-link" %>
+        </li>
+
+        <% if user_signed_in? %>
+          <li class="nav-item">
+            <%= link_to "My Orders", orders_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Wishlist", wishlist_items_path, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <% if user_signed_in? %>
+          <li class="nav-item">
+            <%= link_to cart_path, class: "nav-link" do %>
+              🛒 Cart
+            <% end %>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#"
+               role="button" data-bs-toggle="dropdown"
+               aria-expanded="false">
+              👤 <%= current_user.name.presence || current_user.email %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <% if current_user.vendor? %>
+                <li><%= link_to "Vendor Dashboard", vendor_root_path, class: "dropdown-item" %></li>
+                <li><%= link_to "My Listings", vendor_unitards_path, class: "dropdown-item" %></li>
+              <% end %>
+              <li><%= link_to "Support", new_support_ticket_path, class: "dropdown-item" %></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <%= link_to "Sign Out", destroy_user_session_path,
+                            data: { turbo_method: :delete }, class: "dropdown-item" %>
+              </li>
+            </ul>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to "Sign In", new_user_session_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Sign Up", new_user_registration_path, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

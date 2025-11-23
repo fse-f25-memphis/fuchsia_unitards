@@ -1,0 +1,48 @@
+<nav class="navbar">
+  <div class="navbar-inner container">
+    <%= link_to "Fuchsia", root_path, class: "navbar-brand" %>
+
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <%= link_to "Browse Unitards", unitards_path, class: "nav-link" %>
+      </li>
+      <li class="nav-item">
+        <%= link_to "Trade Post", trades_path, class: "nav-link" %>
+      </li>
+      <% if user_signed_in? %>
+        <li class="nav-item">
+          <%= link_to "My Orders", orders_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Wishlist", wishlist_items_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Cart", cart_path, class: "nav-link" %>
+        </li>
+      <% end %>
+    </ul>
+
+    <ul class="navbar-nav ms-auto">
+      <% if user_signed_in? %>
+        <li class="nav-item">
+          <span class="nav-link nav-user">
+            👤 <%= current_user.name.presence || current_user.email %>
+          </span>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Sign Out",
+                      destroy_user_session_path,
+                      data: { turbo_method: :delete },
+                      class: "nav-link" %>
+        </li>
+      <% else %>
+        <li class="nav-item">
+          <%= link_to "Sign In", new_user_session_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Sign Up", new_user_registration_path, class: "nav-link" %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,36 @@
+<nav class="fuchsia-navbar">
+  <div class="navbar-container">
+
+    <!-- Left: Brand -->
+    <div class="nav-left">
+      <%= link_to "Fuchsia", root_path, class: "nav-brand" %>
+    </div>
+
+    <!-- Center: Navigation Links -->
+    <div class="nav-center">
+      <%= link_to "Browse Unitards", unitards_path, class: "nav-item" %>
+      <%= link_to "Trade Post", trades_path, class: "nav-item" %>
+
+      <% if user_signed_in? %>
+        <%= link_to "My Orders", orders_path, class: "nav-item" %>
+        <%= link_to "Wishlist", wishlist_items_path, class: "nav-item" %>
+        <%= link_to "Cart", cart_path, class: "nav-item" %>
+      <% end %>
+    </div>
+
+    <!-- Right: Auth Buttons -->
+    <div class="nav-right">
+      <% if user_signed_in? %>
+        <span class="nav-user">👤 <%= current_user.name.presence || current_user.email %></span>
+        <%= link_to "Sign Out",
+                    destroy_user_session_path,
+                    data: { turbo_method: :delete },
+                    class: "nav-btn" %>
+      <% else %>
+        <%= link_to "Sign In", new_user_session_path, class: "nav-item" %>
+        <%= link_to "Sign Up", new_user_registration_path, class: "nav-btn" %>
+      <% end %>
+    </div>
+
+  </div>
+</nav>

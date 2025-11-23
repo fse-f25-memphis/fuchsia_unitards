@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  proposer: one
+  recipient: one
+  status: MyString
+
+two:
+  proposer: two
+  recipient: two
+  status: MyString

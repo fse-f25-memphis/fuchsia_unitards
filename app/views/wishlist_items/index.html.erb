@@ -1,0 +1,35 @@
+<h1>My Wishlist</h1>
+
+<% if @wishlist_items.any? %>
+  <div class="row_t cards-grid">
+    <% @wishlist_items.includes(:unitard).each do |item| %>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title"><%= link_to item.unitard.name, item.unitard %></h5>
+            <p class="card-text">
+              <strong><%= number_to_currency(item.unitard.price) %></strong><br>
+              <small>
+                <%= item.unitard.cut %> |
+                <%= item.unitard.size %> |
+                <%= item.unitard.color %>
+              </small>
+            </p>
+          </div>
+          <div class="card-footer card-footer-actions">
+            <%= button_to "Remove",
+                          wishlist_item_path(item),
+                          method: :delete,
+                          class: "btn btn-outline-danger btn-sm" %>
+            <%= button_to "Add to Cart",
+                          add_to_cart_path(unitard_id: item.unitard.id),
+                          method: :post,
+                          class: "btn btn-primary btn-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>You haven’t added any unitards to your wishlist yet.</p>
+<% end %>
