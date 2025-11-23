@@ -1,74 +1,140 @@
-<h1>Shopping Cart</h1>
-
+<div class="container">
+<h1 class="page-title">🛒 Shopping Cart</h1>
 <% if @cart.cart_items.any? %>
-  <div class="row">
-    <div class="col-md-8">
-      <% @cart.cart_items.includes(:unitard).each do |item| %>
-        <div class="card cart-item-card">
-          <div class="row">
-          <div class="col-md-3 cart-item-icon">
-          <%= image_tag unitard_image(item.unitard),
-                        alt: item.unitard.name,
-                        class: "cart-unitard-image" %>
-        </div>
-        
-            <div class="col-md-9">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <%= link_to item.unitard.name, item.unitard %>
-                </h5>
-                <p class="card-text mb-1">
-                  <strong>Price:</strong>
-                  <%= number_to_currency(item.unitard.price) %>
-                </p>
-                <p class="card-text mb-1">
-                  <small>
-                    <%= item.unitard.cut %> |
-                    <%= item.unitard.size %> |
-                    <%= item.unitard.color %>
-                  </small>
-                </p>
-
-                <div class="button-row mt-2">
-                  <%= form_with model: item,
-                                url: update_item_cart_path(item),
-                                method: :patch,
-                                local: true,
-                                class: "inline-form" do |f| %>
-                    <%= f.label :quantity, "Qty:", class: "mb-0" %>
-                    <%= f.number_field :quantity, min: 1, class: "form-control qty-input" %>
-                    <%= f.submit "Update", class: "btn btn-outline-primary btn-sm" %>
-                  <% end %>
-
-                  <%= button_to "Remove",
-                                remove_item_cart_path(item),
-                                method: :delete,
-                                data: { confirm: "Remove this unitard from your cart?" },
-                                class: "btn btn-outline-danger btn-sm" %>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      <% end %>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card order-summary-card">
-        <div class="card-body">
-          <h4>Order Summary</h4>
-          <% total = @cart.cart_items.includes(:unitard).sum { |i| i.quantity * i.unitard.price } %>
-          <p class="fs-5">
-            <strong>Total:</strong> <%= number_to_currency(total) %>
-          </p>
-          <%= link_to "Proceed to Checkout",
-                      new_order_path,
-                      class: "btn btn-primary w-100" %>
-        </div>
-      </div>
-    </div>
-  </div>
-<% else %>
-  <p>Your cart is empty.</p>
-  <%= link_to "Browse Unitards", unitards_path, class: "btn btn-primary" %>
+<div class="row">
+<!-- Cart Items Column -->
+<div class="col-md-8">
+<% @cart.cart_items.includes(:unitard).each do |item| %>
+<div class="cart-item-card">
+<div class="row">
+<!-- Product Image -->
+<div class="col-md-3 cart-item-icon">
+<%= image_tag unitard_image(item.unitard),
+                              alt: item.unitard.name,
+                              class: "cart-unitard-image" %>
+</div>
+<!-- Product Details -->
+<div class="col-md-9">
+<div class="card-body">
+<h5 class="card-title">
+<%= link_to item.unitard.name, item.unitard, style: "color: #1f2937; font-weight: 700;" %>
+</h5>
+<p class="card-text mb-2">
+<strong style="font-size: 1.5rem; color: #7c3aed;">
+<%= number_to_currency(item.unitard.price) %>
+</strong>
+</p>
+<p class="card-text mb-2">
+<small style="display: inline-block; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, #f3f4f6, #e5e7eb); border-radius: 8px;">
+<%= item.unitard.cut %> | 
+<%= item.unitard.size %> | 
+<%= item.unitard.color %>
+</small>
+</p>
+<!-- Quantity and Actions -->
+<div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1.5rem;">
+<%= form_with model: item,
+                                  url: update_item_cart_path(item),
+                                  method: :patch,
+                                  local: true,
+                                  html: { style: "display: inline-flex; gap: 0.5rem; align-items: center;" } do |f| %>
+<%= f.label :quantity, "Quantity:", style: "margin: 0; font-weight: 600; color: #4b5563;" %>
+<%= f.number_field :quantity, 
+                                         min: 1, 
+                                         max: item.unitard.stock,
+                                         class: "form-control",
+                                         style: "max-width: 80px;" %>
+<%= f.submit "Update", class: "btn btn-outline-primary btn-sm" %>
 <% end %>
+<%= button_to "Remove",
+                                  remove_item_cart_path(item),
+                                  method: :delete,
+                                  data: { turbo_confirm: "Remove this unitard from your cart?" },
+                                  class: "btn btn-outline-danger btn-sm" %>
+</div>
+<!-- Subtotal -->
+<p style="margin-top: 1rem; margin-bottom: 0; color: #6b7280;">
+<strong>Subtotal:</strong> 
+<span style="color: #7c3aed; font-weight: 700;">
+<%= number_to_currency(item.quantity * item.unitard.price) %>
+</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+<% end %>
+</div>
+<!-- Order Summary Column -->
+<div class="col-md-4">
+<div class="card order-summary-card">
+<div class="card-body">
+<h4 style="margin-bottom: 1.5rem; color: #1f2937;">Order Summary</h4>
+<% total = @cart.cart_items.includes(:unitard).sum { |i| i.quantity * i.unitard.price } %>
+<% item_count = @cart.cart_items.sum(:quantity) %>
+<div style="padding: 1.5rem 0; border-bottom: 2px solid #e5e7eb;">
+<div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+<span style="color: #6b7280;">Items (<%= item_count %>)</span>
+<span style="font-weight: 600;"><%= number_to_currency(total) %></span>
+</div>
+<div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+<span style="color: #6b7280;">Shipping</span>
+<span style="font-weight: 600; color: #10b981;">FREE</span>
+</div>
+</div>
+<div style="padding: 1.5rem 0;">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<span style="font-size: 1.25rem; font-weight: 700; color: #1f2937;">Total</span>
+<span style="font-size: 1.75rem; font-weight: 700; background: linear-gradient(135deg, #7c3aed, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+<%= number_to_currency(total) %>
+</span>
+</div>
+</div>
+<%= link_to "Proceed to Checkout →",
+                        new_order_path,
+                        class: "btn btn-primary w-100",
+                        style: "padding: 1rem; font-size: 1.05rem; font-weight: 700;" %>
+<%= link_to "← Continue Shopping",
+                        unitards_path,
+                        class: "btn btn-link w-100",
+                        style: "margin-top: 1rem; text-align: center;" %>
+</div>
+</div>
+<!-- Trust Badges -->
+<div style="margin-top: 1.5rem; padding: 1.5rem; background: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid rgba(124, 58, 237, 0.1);">
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="display: flex; align-items: center; gap: 0.75rem;">
+<span style="font-size: 1.5rem;">🔒</span>
+<div>
+<strong style="display: block; color: #1f2937; font-size: 0.9rem;">Secure Checkout</strong>
+<span style="color: #6b7280; font-size: 0.85rem;">Your data is protected</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 0.75rem;">
+<span style="font-size: 1.5rem;">🚚</span>
+<div>
+<strong style="display: block; color: #1f2937; font-size: 0.9rem;">Free Shipping</strong>
+<span style="color: #6b7280; font-size: 0.85rem;">On all orders</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 0.75rem;">
+<span style="font-size: 1.5rem;">↩️</span>
+<div>
+<strong style="display: block; color: #1f2937; font-size: 0.9rem;">Easy Returns</strong>
+<span style="color: #6b7280; font-size: 0.85rem;">30-day return policy</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<% else %>
+<!-- Empty Cart State -->
+<div style="text-align: center; padding: 5rem 2rem; background: white; border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(124, 58, 237, 0.1);">
+<div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.5;">🛒</div>
+<h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 1.75rem;">Your cart is empty</h3>
+<p style="color: #6b7280; margin-bottom: 2rem; font-size: 1.1rem;">Start adding some amazing unitards to your collection!</p>
+<%= link_to "Browse Unitards →", unitards_path, class: "btn btn-primary", style: "padding: 1rem 2rem; font-size: 1.05rem;" %>
+</div>
+<% end %>
+</div>

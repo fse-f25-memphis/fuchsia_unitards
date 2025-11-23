@@ -1,91 +1,199 @@
+<div class="container">
 <h1 class="page-title">Masters of the Unitard</h1>
-
-<div class="search-container mb-4">
-  <%= form_with url: unitards_path, method: :get, local: true, html: { class: "row g-2 align-items-end" } do %>
-    <div class="col-md-4">
-      <%= label_tag :query, "Search" %>
-      <%= text_field_tag :query, params[:query], class: "form-control", placeholder: "Search unitards..." %>
-    </div>
-
-    <div class="col-md-2">
-      <%= label_tag :size, "Size" %>
-      <%= select_tag :size,
-          options_for_select(["", "S", "M", "L", "XL", "XXL", "XXXL"], params[:size]),
-          class: "form-select" %>
-    </div>
-
-    <div class="col-md-2">
-      <%= label_tag :color, "Color" %>
-      <%= text_field_tag :color, params[:color], class: "form-control", placeholder: "e.g. Red" %>
-    </div>
-
-    <div class="col-md-2">
-      <%= label_tag :sort, "Sort" %>
-      <%= select_tag :sort,
-          options_for_select([
-            ["Price: Low → High", "price_asc"],
-            ["Price: High → Low", "price_desc"]
-          ], params[:sort]),
-          include_blank: "Choose…",
-          class: "form-select" %>
-    </div>
-
-    <div class="col-md-2">
-    <div class="col-md-2">
-  <%= label_tag :actions, "Apply" %>
-
-  <div class="d-flex gap-2">
-    <%= submit_tag "Apply", class: "btn btn-primary w-100" %>
-
-    <% if params[:query].present? || params[:size].present? || params[:color].present? || params[:sort].present? %>
-    <%= link_to "Clear Filter",
-                  unitards_path,
-                  class: "btn btn-outline-secondary w-100" %>
-    <% end %>
-  </div>
+ 
+  <!-- Search Bar with Filter Icon -->
+<div class="search-bar-container">
+<%= form_with url: unitards_path, method: :get, local: true, html: { id: "filter-form" } do %>
+<div class="search-bar-wrapper">
+<span class="search-icon">🔍</span>
+<%= text_field_tag :query, params[:query], class: "search-input", placeholder: "Search unitards..." %>
+<button type="button" class="filter-toggle-btn" id="filterToggle">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<line x1="4" y1="6" x2="20" y2="6"></line>
+<line x1="4" y1="12" x2="20" y2="12"></line>
+<line x1="4" y1="18" x2="20" y2="18"></line>
+<circle cx="7" cy="6" r="2" fill="white"></circle>
+<circle cx="14" cy="12" r="2" fill="white"></circle>
+<circle cx="17" cy="18" r="2" fill="white"></circle>
+</svg>
+</button>
 </div>
-
-  <% end %>
+ 
+      <!-- Slide-out Filter Panel -->
+<div class="filter-panel" id="filterPanel">
+<div class="filter-panel-header">
+<h3>Filters</h3>
+<button type="button" class="close-panel-btn" id="closePanel">✕</button>
 </div>
+<div class="filter-panel-body">
+<div class="filter-group">
+<%= label_tag :size, "📏 Size" %>
+<%= select_tag :size,
 
-<% if @unitards.any? %>
-  <div class="row cards-grid">
-    <% @unitards.each do |unitard| %>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">
-              <%= link_to unitard.name, unitard_path(unitard) %>
-            </h5>
-            <p class="card-text">
-              <strong><%= number_to_currency(unitard.price) %></strong><br>
-              <small>
-                <%= unitard.cut %> |
-                <%= unitard.size %> |
-                <%= unitard.color %>
-              </small>
-            </p>
-            <% if unitard.description.present? %>
-              <p class="card-text text-muted">
-                <%= truncate(unitard.description, length: 80) %>
-              </p>
-            <% end %>
-          </div>
-          <div class="card-footer card-footer-actions action-buttons">
-  <%= link_to "View", unitard_path(unitard), class: "btn btn-outline-primary btn-sm" %>
+                options_for_select(["", "S", "M", "L", "XL", "XXL", "XXXL"], params[:size]),
 
-  <% if user_signed_in? %>
-    <%= button_to "Add to Cart",
-                  add_to_cart_path(unitard_id: unitard.id),
-                  method: :post,
-                  class: "btn btn-primary btn-sm d-inline-block" %>
-  <% end %>
+                class: "form-select" %>
 </div>
+<div class="filter-group">
+<%= label_tag :color, "🎨 Color" %>
+<%= text_field_tag :color, params[:color], class: "form-control", placeholder: "e.g. Red" %>
+</div>
+<div class="filter-group">
+<%= label_tag :sort, "⚡ Sort By" %>
+<%= select_tag :sort,
 
-        </div>
-      </div>
-    <% end %>
-  </div>
-<% else %>
-  <p>No unitards found. Try changing your filters.</p>
+                options_for_select([
+
+                  ["Price: Low → High", "price_asc"],
+
+                  ["Price: High → Low", "price_desc"]
+
+                ], params[:sort]),
+
+                include_blank: "Choose…",
+
+                class: "form-select" %>
+</div>
+<div class="filter-actions">
+<%= submit_tag "Apply Filters", class: "btn btn-primary w-100" %>
+<% if params[:query].present? || params[:size].present? || params[:color].present? || params[:sort].present? %>
+<%= link_to "Clear All", unitards_path, class: "btn btn-outline-secondary w-100" %>
 <% end %>
+</div>
+</div>
+</div>
+ 
+      <!-- Overlay -->
+<div class="filter-overlay" id="filterOverlay"></div>
+<% end %>
+</div>
+
+<!-- ADD THIS PROMOTIONAL BANNER HERE -->
+<div style="background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink)); 
+            border-radius: var(--radius-xl); 
+            padding: 1.5rem 2rem; 
+            text-align: center; 
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            animation: fadeIn 0.5s ease;">
+  <h2 style="color: white; font-size: 1.75rem; font-weight: 800; margin: 0 0 0.5rem 0;">
+    🔥 Masters of the Universe Collection - Now Available! 🔥
+  </h2>
+  <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; margin: 0;">
+    Premium themed unitards for ultimate performance • Limited Stock Available
+  </p>
+</div>
+<!-- END OF PROMOTIONAL BANNER -->
+
+ 
+  <!-- Products Grid -->
+<% if @unitards.any? %>
+<div class="cards-grid">
+<% @unitards.each do |unitard| %>
+<div class="card h-100">
+<!-- Product Image (if available) -->
+<% if unitard.respond_to?(:image_url) && unitard.image_url.present? %>
+<div style="height: 240px; overflow: hidden; background: linear-gradient(135deg, #f3f4f6, #e5e7eb);">
+<%= image_tag unitard_image(unitard),
+
+                            alt: unitard.name,
+
+                            style: "width: 100%; height: 100%; object-fit: cover;" %>
+</div>
+<% end %>
+<div class="card-body">
+<h5 class="card-title">
+<%= link_to unitard.name, unitard_path(unitard) %>
+</h5>
+<p class="card-text">
+<strong><%= number_to_currency(unitard.price) %></strong>
+</p>
+<p class="card-text">
+<small>
+<%= unitard.cut %> | 
+<%= unitard.size %> | 
+<%= unitard.color %>
+</small>
+</p>
+<% if unitard.description.present? %>
+<p class="card-text text-muted">
+<%= truncate(unitard.description, length: 100) %>
+</p>
+<% end %>
+</div>
+<div class="card-footer-actions action-buttons">
+<%= link_to "View Details", unitard_path(unitard), class: "btn btn-outline-primary btn-sm" %>
+<% if user_signed_in? %>
+<%= button_to "Add to Cart",
+
+                            add_to_cart_path(unitard_id: unitard.id),
+
+                            method: :post,
+
+                            class: "btn btn-primary btn-sm" %>
+<% end %>
+</div>
+</div>
+<% end %>
+</div>
+<% else %>
+<div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+<h3 style="color: #6b7280; margin-bottom: 1rem;">No unitards found</h3>
+<p style="color: #9ca3af; margin-bottom: 1.5rem;">Try adjusting your filters or search query</p>
+<%= link_to "Clear Filters", unitards_path, class: "btn btn-primary" %>
+</div>
+<% end %>
+</div>
+ 
+<script>
+
+  // Filter Panel Toggle
+
+  const filterToggle = document.getElementById('filterToggle');
+
+  const filterPanel = document.getElementById('filterPanel');
+
+  const filterOverlay = document.getElementById('filterOverlay');
+
+  const closePanel = document.getElementById('closePanel');
+ 
+  function openFilterPanel() {
+
+    filterPanel.classList.add('active');
+
+    filterOverlay.classList.add('active');
+
+    document.body.style.overflow = 'hidden';
+
+  }
+ 
+  function closeFilterPanel() {
+
+    filterPanel.classList.remove('active');
+
+    filterOverlay.classList.remove('active');
+
+    document.body.style.overflow = '';
+
+  }
+ 
+  filterToggle.addEventListener('click', openFilterPanel);
+
+  closePanel.addEventListener('click', closeFilterPanel);
+
+  filterOverlay.addEventListener('click', closeFilterPanel);
+ 
+  // Close on ESC key
+
+  document.addEventListener('keydown', function(e) {
+
+    if (e.key === 'Escape') {
+
+      closeFilterPanel();
+
+    }
+
+  });
+</script>
+ 
+ 
