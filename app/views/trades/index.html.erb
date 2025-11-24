@@ -1,34 +1,48 @@
-<h1>Trade Requests</h1>
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 class="page-title" style="margin-bottom: 0;">Trade Requests</h1>
+    <%= link_to "Propose New Trade", new_trade_path, class: "btn btn-primary" %>
+  </div>
 
-<p>
-  <%= link_to "Propose New Trade", new_trade_path, class: "btn btn-primary mb-3" %>
-</p>
-
-<% if @trades.any? %>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Trade #</th>
-        <th>Proposer</th>
-        <th>Recipient</th>
-        <th>Status</th>
-        <th>Created</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @trades.each do |trade| %>
-        <tr>
-          <td><%= trade.id %></td>
-          <td><%= trade.proposer.name.presence || trade.proposer.email %></td>
-          <td><%= trade.recipient.name.presence || trade.recipient.email %></td>
-          <td><span class="badge bg-secondary"><%= trade.status %></span></td>
-          <td><%= trade.created_at.strftime("%Y-%m-%d") %></td>
-          <td><%= link_to "View", trade_path(trade), class: "btn btn-outline-primary btn-sm" %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>You have no trade activity yet.</p>
-<% end %>
+  <% if @trades.any? %>
+    <div class="card" style="overflow: hidden;">
+      <table style="width: 100%; border-collapse: collapse; margin: 0;">
+        <thead style="background: linear-gradient(135deg, #fafafa, #f3f4f6); border-bottom: 2px solid var(--border-color);">
+          <tr>
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark);">Trade #</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark);">Proposer</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark);">Recipient</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark);">Status</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark);">Created</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark);">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @trades.each do |trade| %>
+            <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.2s;">
+              <td style="padding: 1rem;"><strong>#<%= trade.id %></strong></td>
+              <td style="padding: 1rem;"><%= trade.proposer.name.presence || trade.proposer.email %></td>
+              <td style="padding: 1rem;"><%= trade.recipient.name.presence || trade.recipient.email %></td>
+              <td style="padding: 1rem;">
+                <% status_color = trade.status == 'pending' ? '#f59e0b' : (trade.status == 'accepted' ? '#10b981' : '#ef4444') %>
+                <span style="display: inline-block; padding: 0.25rem 0.75rem; background: <%= status_color %>; color: white; border-radius: 12px; font-size: 0.875rem; font-weight: 600;">
+                  <%= trade.status.capitalize %>
+                </span>
+              </td>
+              <td style="padding: 1rem; color: var(--text-gray);"><%= trade.created_at.strftime("%Y-%m-%d") %></td>
+              <td style="padding: 1rem;">
+                <%= link_to "View", trade_path(trade), class: "btn btn-outline-primary btn-sm" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="text-center" style="padding: 4rem 0;">
+      <h3 style="color: #6b7280; margin-bottom: 1rem;">No trade activity yet</h3>
+      <p style="color: #9ca3af; margin-bottom: 2rem;">Start trading with other users!</p>
+      <%= link_to "Propose New Trade", new_trade_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

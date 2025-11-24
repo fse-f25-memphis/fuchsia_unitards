@@ -1,38 +1,60 @@
-<h1>Propose Trade</h1>
+<div class="container">
+  <h1 class="page-title">Propose Trade</h1>
 
-<%= form_with model: @trade, url: trades_path, local: true do |f| %>
-  <div class="mb-3">
-    <%= f.label :recipient_id, "Select trade partner" %>
-    <%= f.collection_select :recipient_id,
-          User.where.not(id: current_user.id),
-          :id, :email,
-          { prompt: "Choose user..." },
-          { class: "form-select" } %>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Your Unitards (offered)</h3>
-      <% @owned_unitards.each do |u| %>
-        <div class="form-check">
-          <%= check_box_tag "proposer_unitard_ids[]", u.id, false, class: "form-check-input", id: "prop_#{u.id}" %>
-          <%= label_tag "prop_#{u.id}", "#{u.name} (#{u.size}, #{u.color})", class: "form-check-label" %>
-        </div>
-      <% end %>
-    </div>
-
-    <div class="col-md-6">
-      <h3>Desired Unitards (from recipient)</h3>
-      <p class="text-muted">
-        (Later you can restrict this to unitards that the recipient marked as "available for trade".)
-      </p>
-      <div class="mb-2">
-        <%= text_field_tag "recipient_unitard_ids[]", nil,
-              class: "form-control",
-              placeholder: "Enter desired unitard IDs, one per line/field" %>
+  <%= form_with model: @trade, url: trades_path, local: true do |f| %>
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="card-body">
+        <%= f.label :recipient_id, "Select trade partner", style: "display: block; font-weight: 600; margin-bottom: 0.5rem;" %>
+        <%= f.collection_select :recipient_id,
+              User.where.not(id: current_user.id),
+              :id, :email,
+              { prompt: "Choose user..." },
+              { class: "form-select" } %>
       </div>
     </div>
-  </div>
 
-  <%= f.submit "Send Trade Proposal", class: "btn btn-primary mt-3" %>
-<% end %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card" style="height: 100%;">
+          <div class="card-body">
+            <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--primary-purple);">Your Unitards (Offered)</h3>
+            <% if @owned_unitards.any? %>
+              <% @owned_unitards.each do |u| %>
+                <div style="padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem; transition: all 0.2s;">
+                  <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                    <%= check_box_tag "proposer_unitard_ids[]", u.id, false, style: "width: 20px; height: 20px; margin-right: 0.75rem; cursor: pointer;", id: "prop_#{u.id}" %>
+                    <span style="font-weight: 500;"><%= u.name %></span>
+                    <small style="color: var(--text-gray); margin-left: 0.5rem;">(<%= u.size %>, <%= u.color %>)</small>
+                  </label>
+                </div>
+              <% end %>
+            <% else %>
+              <p style="color: var(--text-gray);">You don't own any unitards yet.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card" style="height: 100%;">
+          <div class="card-body">
+            <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--primary-purple);">Desired Unitards</h3>
+            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 1.5rem;">
+              Enter the IDs of unitards you want from the recipient.
+            </p>
+            <%= text_area_tag "recipient_unitard_ids[]", nil,
+                  class: "form-control",
+                  placeholder: "Enter unitard IDs (one per line)",
+                  rows: 8,
+                  style: "resize: vertical;" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+      <%= f.submit "Send Trade Proposal", class: "btn btn-primary" %>
+      <%= link_to "Cancel", trades_path, class: "btn btn-outline-secondary" %>
+    </div>
+  <% end %>
+</div>

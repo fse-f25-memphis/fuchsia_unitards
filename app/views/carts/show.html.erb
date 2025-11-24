@@ -1,74 +1,74 @@
-<h1>Shopping Cart</h1>
+<div class="container">
+  <h1 class="page-title">Shopping Cart</h1>
 
-<% if @cart.cart_items.any? %>
-  <div class="row">
-    <div class="col-md-8">
-      <% @cart.cart_items.includes(:unitard).each do |item| %>
-        <div class="card cart-item-card">
-          <div class="row">
-          <div class="col-md-3 cart-item-icon">
-          <%= image_tag unitard_image(item.unitard),
-                        alt: item.unitard.name,
-                        class: "cart-unitard-image" %>
-        </div>
-        
-            <div class="col-md-9">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <%= link_to item.unitard.name, item.unitard %>
-                </h5>
-                <p class="card-text mb-1">
-                  <strong>Price:</strong>
-                  <%= number_to_currency(item.unitard.price) %>
-                </p>
-                <p class="card-text mb-1">
-                  <small>
-                    <%= item.unitard.cut %> |
-                    <%= item.unitard.size %> |
-                    <%= item.unitard.color %>
-                  </small>
-                </p>
+  <% if @cart.cart_items.any? %>
+    <div class="row">
+      <div class="col-md-8">
+        <% @cart.cart_items.includes(:unitard).each do |item| %>
+          <div class="card cart-item-card" style="margin-bottom: 1.5rem;">
+            <div class="row g-0">
+              <div class="col-md-3" style="max-height: 200px; overflow: hidden;">
+                <%= image_tag unitard_image(item.unitard),
+                              alt: item.unitard.name,
+                              style: "width: 100%; height: 200px; object-fit: cover; border-radius: 16px 0 0 16px;" %>
+              </div>
+              
+              <div class="col-md-9">
+                <div class="card-body" style="padding: 1.5rem;">
+                  <h5 class="card-title" style="margin-bottom: 0.75rem;">
+                    <%= link_to item.unitard.name, item.unitard %>
+                  </h5>
+                  <p style="margin-bottom: 0.5rem;">
+                    <strong style="font-size: 1.5rem; color: var(--primary-purple);"><%= number_to_currency(item.unitard.price) %></strong>
+                  </p>
+                  <p style="margin-bottom: 1rem; color: var(--text-gray); font-size: 0.95rem;">
+                    <%= item.unitard.cut %> | <%= item.unitard.size %> | <%= item.unitard.color %>
+                  </p>
 
-                <div class="button-row mt-2">
-                  <%= form_with model: item,
-                                url: update_item_cart_path(item),
-                                method: :patch,
-                                local: true,
-                                class: "inline-form" do |f| %>
-                    <%= f.label :quantity, "Qty:", class: "mb-0" %>
-                    <%= f.number_field :quantity, min: 1, class: "form-control qty-input" %>
-                    <%= f.submit "Update", class: "btn btn-outline-primary btn-sm" %>
-                  <% end %>
+                  <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
+                    <%= form_with model: item,
+                                  url: update_item_cart_path(item),
+                                  method: :patch,
+                                  local: true,
+                                  style: "display: flex; gap: 0.5rem; align-items: flex-end;" do |f| %>
+                      <div>
+                        <%= f.label :quantity, "Qty:", style: "display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem;" %>
+                        <%= f.number_field :quantity, min: 1, class: "form-control", style: "width: 70px;" %>
+                      </div>
+                      <%= f.submit "Update", class: "btn btn-outline-primary btn-sm" %>
+                    <% end %>
 
-                  <%= button_to "Remove",
-                                remove_item_cart_path(item),
-                                method: :delete,
-                                data: { confirm: "Remove this unitard from your cart?" },
-                                class: "btn btn-outline-danger btn-sm" %>
+                    <%= button_to "Remove",
+                                  remove_item_cart_path(item),
+                                  method: :delete,
+                                  data: { turbo_confirm: "Remove?" },
+                                  class: "btn btn-outline-danger btn-sm" %>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
 
-    <div class="col-md-4">
-      <div class="card order-summary-card">
-        <div class="card-body">
-          <h4>Order Summary</h4>
-          <% total = @cart.cart_items.includes(:unitard).sum { |i| i.quantity * i.unitard.price } %>
-          <p class="fs-5">
-            <strong>Total:</strong> <%= number_to_currency(total) %>
-          </p>
-          <%= link_to "Proceed to Checkout",
-                      new_order_path,
-                      class: "btn btn-primary w-100" %>
+      <div class="col-md-4">
+        <div class="card order-summary-card">
+          <div class="card-body">
+            <h4 style="margin-bottom: 1.5rem;">Order Summary</h4>
+            <% total = @cart.cart_items.includes(:unitard).sum { |i| i.quantity * i.unitard.price } %>
+            <p style="font-size: 1.25rem; margin-bottom: 2rem;">
+              <strong>Total:</strong> <%= number_to_currency(total) %>
+            </p>
+            <%= link_to "Proceed to Checkout", new_order_path, class: "btn btn-primary w-100" %>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-<% else %>
-  <p>Your cart is empty.</p>
-  <%= link_to "Browse Unitards", unitards_path, class: "btn btn-primary" %>
-<% end %>
+  <% else %>
+    <div class="text-center" style="padding: 4rem 0;">
+      <h3 style="color: #6b7280;">Your cart is empty</h3>
+      <p style="color: #9ca3af; margin: 1rem 0;">Add some unitards!</p>
+      <%= link_to "Browse Unitards", unitards_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
