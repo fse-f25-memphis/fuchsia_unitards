@@ -1,64 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>UniVerse - Masters of the Unitard</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<%= csrf_meta_tags %>
-<%= csp_meta_tag %>
- 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-<%= javascript_importmap_tags %>
+  <title>UniVerse - Masters of the Unitard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
 </head>
  
-  <body>
-<%= render "shared/navbar" %>
-<%= render "shared/flash" %>
-<main class="my-4">
-<%= yield %>
-</main>
-<!-- Optional Footer -->
-<footer style="background: linear-gradient(135deg, #1f2937, #111827); color: white; padding: 3rem 0; margin-top: 5rem;">
-<div class="container">
-<div class="row">
-<div class="col-md-4" style="margin-bottom: 2rem;">
-<h3 style="background: linear-gradient(135deg, #a78bfa, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
-              Fuchsia
-</h3>
-<p style="color: #9ca3af; line-height: 1.7;">
-              Your premier destination for Masters of the Universe themed unitards. 
-              Quality craftsmanship meets nostalgic design.
-</p>
-</div>
-<div class="col-md-4" style="margin-bottom: 2rem;">
-<h4 style="color: white; font-size: 1.1rem; margin-bottom: 1rem;">Quick Links</h4>
-<ul style="list-style: none; padding: 0;">
-<li style="margin-bottom: 0.5rem;">
-<%= link_to "Browse Unitards", unitards_path, style: "color: #9ca3af; text-decoration: none;" %>
-</li>
-<li style="margin-bottom: 0.5rem;">
-<%= link_to "Trade Post", trades_path, style: "color: #9ca3af; text-decoration: none;" %>
-</li>
-<% if user_signed_in? %>
-<li style="margin-bottom: 0.5rem;">
-<%= link_to "My Orders", orders_path, style: "color: #9ca3af; text-decoration: none;" %>
-</li>
-<% end %>
-</ul>
-</div>
-<div class="col-md-4" style="margin-bottom: 2rem;">
-<h4 style="color: white; font-size: 1.1rem; margin-bottom: 1rem;">Contact</h4>
-<p style="color: #9ca3af; line-height: 1.7;">
-              Email: support@fuchsia.com<br>
-              Phone: (555) 123-4567
-</p>
-</div>
-</div>
-<div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 2rem; margin-top: 2rem; text-align: center;">
-<p style="color: #9ca3af; margin: 0;">
-            © <%= Time.current.year %> Fuchsia. All rights reserved. Made with ❤️ for unitard enthusiasts.
-</p>
-</div>
-</div>
-</footer>
+<body>
+  <%= render "shared/navbar" %>
+  <%= render "shared/flash" %>
+  
+  <main class="my-4">
+    <%= yield %>
+  </main>
+  
+  <!-- Footer -->
+  <footer style="background: linear-gradient(135deg, #1f2937, #111827); color: white; padding: 3rem 0; margin-top: 5rem;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4" style="margin-bottom: 2rem;">
+          <h3 style="background: linear-gradient(135deg, #a78bfa, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; font-weight: 800; font-size: 1.5rem;">
+            UniVerse
+          </h3>
+          <p style="color: #9ca3af; line-height: 1.7;">
+            Your premier destination for Masters of the Universe themed unitards. 
+            Quality craftsmanship meets nostalgic design.
+          </p>
+        </div>
+        
+        <div class="col-md-4" style="margin-bottom: 2rem;">
+          <h4 style="color: white; font-size: 1.1rem; margin-bottom: 1rem; font-weight: 600;">Quick Links</h4>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 0.5rem;">
+              <%= link_to "Browse Unitards", unitards_path, style: "color: #9ca3af; text-decoration: none; transition: color 0.2s;" %>
+            </li>
+            <li style="margin-bottom: 0.5rem;">
+              <%= link_to "Trade Post", trades_path, style: "color: #9ca3af; text-decoration: none; transition: color 0.2s;" %>
+            </li>
+            <% if user_signed_in? %>
+              <li style="margin-bottom: 0.5rem;">
+                <%= link_to "My Orders", orders_path, style: "color: #9ca3af; text-decoration: none; transition: color 0.2s;" %>
+              </li>
+              <li style="margin-bottom: 0.5rem;">
+                <%= link_to "Wishlist", wishlist_items_path, style: "color: #9ca3af; text-decoration: none; transition: color 0.2s;" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+        
+        <div class="col-md-4" style="margin-bottom: 2rem;">
+          <h4 style="color: white; font-size: 1.1rem; margin-bottom: 1rem; font-weight: 600;">Contact</h4>
+          <p style="color: #9ca3af; line-height: 1.7;">
+            Email: support@universe.com<br>
+            Phone: (555) 123-4567
+          </p>
+        </div>
+      </div>
+      
+      <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 2rem; margin-top: 2rem; text-align: center;">
+        <p style="color: #9ca3af; margin: 0;">
+          © <%= Time.current.year %> UniVerse. All rights reserved. Made with ❤️ for unitard enthusiasts.
+        </p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
