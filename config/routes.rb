@@ -43,10 +43,6 @@ Rails.application.routes.draw do
     resources :messages, only: %i[index show create]
     resources :analytics, only: [:index]
   end
-  resources :reviews, only: [:new, :create, :index, :show]
-  resources :orders do
-  member do
-    patch :complete
-  end
-end
+  
+  resources :reviews, only: [:create]
 end

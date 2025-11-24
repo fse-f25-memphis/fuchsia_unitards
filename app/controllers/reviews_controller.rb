@@ -7,13 +7,13 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    @unitard = Unitard.find(params[:review][:unitard_id])
+    @unitard = Unitard.find(params[:unitard_id])
     @review = @unitard.reviews.new(review_params.merge(user: current_user))
     
     if @review.save
-      redirect_to order_path(params[:review][:order_id]), notice: "Review submitted successfully!"
+      redirect_to order_path(params[:order_id]), notice: "Review submitted successfully!"
     else
-      redirect_to order_path(params[:review][:order_id]), alert: "Failed to submit review: #{@review.errors.full_messages.join(', ')}"
+      redirect_to order_path(params[:order_id]), alert: "Failed to submit review: #{@review.errors.full_messages.join(', ')}"
     end
   end
 
@@ -24,6 +24,6 @@ class ReviewsController < ApplicationController
   end
 
   def review_params
-    params.require(:review).permit(:rating, :title, :comment)
+    params.permit(:rating, :title, :comment)
   end
 end

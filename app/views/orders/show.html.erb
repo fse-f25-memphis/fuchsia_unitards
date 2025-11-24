@@ -112,12 +112,7 @@
 
               <div style="margin-bottom: 1rem;">
                 <%= f.label :rating, "Rating:", style: "display: block; font-weight: 600; margin-bottom: 0.5rem;" %>
-                <div style="display: flex; gap: 0.5rem;">
-                  <% 5.times do |i| %>
-                    <%= f.radio_button :rating, i + 1, id: "rating_#{item.unitard.id}_#{i + 1}", style: "display: none;" %>
-                    <label for="rating_<%= item.unitard.id %>_<%= i + 1 %>" style="cursor: pointer; font-size: 1.5rem; color: #fbbf24;">★</label>
-                  <% end %>
-                </div>
+                <%= f.select :rating, (1..5).map { |i| ["#{'★' * i} (#{i} stars)", i] }, { prompt: "Select rating..." }, class: "form-control", style: "width: 100%; padding: 0.5rem;" %>
               </div>
 
               <div style="margin-bottom: 1rem;">
