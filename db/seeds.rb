@@ -34,23 +34,35 @@ cart3 = Cart.create!(user: customer3)
 
 puts "Creating unitards..."
 
-graphics = ["He-Man", "Skeletor", "Battle Cat", "She-Ra", "Castle Grayskull", "Man-At-Arms"]
-colors   = ["Red", "Blue", "Green", "Purple", "Black", "Gold"]
-sizes    = ["S", "M", "L", "XL", "XXL"]
+unitard_data = [
+  ["He-Man Power Suit 1",              "unitards/suit1.jpg",  "Mens",  "XL",  "Sleeveless",      "He-Man",           "Red"],
+  ["He-Man Power Suit 2",              "unitards/suit2.jpg",  "Mens",  "L",   "Short Sleeved",   "He-Man",           "Blue"],
+  ["She-Ra Power Suit 3",              "unitards/suit3.jpg",  "Womens","M",   "Sleeveless",      "She-Ra",           "Gold"],
+  ["She-Ra Power Suit 4",              "unitards/suit4.jpg",  "Womens","S",   "Long Sleeved",    "She-Ra",           "Pink"],
+  ["Castle Grayskull Power Suit 5",    "unitards/suit5.jpg",  "Mens",  "XL",  "Short Sleeved",   "Castle Grayskull", "Green"],
+  ["Battle Cat Power Suit 6",          "unitards/suit6.jpg",  "Mens",  "L",   "Sleeveless",      "Battle Cat",       "Green"],
+  ["Skeletor Power Suit 7",            "unitards/suit7.jpg",  "Mens",  "XXL", "Short Sleeved",   "Skeletor",         "Purple"],
+  ["Castle Grayskull Power Suit 8",    "unitards/suit8.jpg",  "Mens",  "XXL", "Short Sleeved",   "Castle Grayskull", "Blue"],
+  ["Man-At-Arms Power Suit 9",         "unitards/suit9.jpg",  "Child", "S",   "Long Sleeved",    "Castle Grayskull", "Blue"],
+  ["Man-At-Arms Power Suit 10",        "unitards/suit10.jpg", "Child", "M",   "Sleeveless",      "Skeletor",         "Purple"],
+  ["He-Man Power Suit 11",             "unitards/suit11.jpg", "Child", "S",   "Sleeveless",      "She-Ra",           "Red"],
+  ["Man-At-Arms Power Suit 12",        "unitards/suit12.jpg", "Child", "S",   "Sleeveless",      "Man-At-Arms",      "Black"]
+]
 
-12.times do |i|
+unitard_data.each do |name, image, cut, size, sleeves, graphic, color|
   Unitard.create!(
-    name: "#{graphics.sample} Power Suit #{i + 1}",
+    name: name,
     description: "A premium Masters of the Universe themed unitard, crafted for ultimate performance.",
-    price: rand(39.0..89.0).round(2),
-    cut: ["Mens", "Womens", "Child"].sample,
-    size: sizes.sample,
-    sleeves: ["Sleeveless", "Short Sleeved", "Long Sleeved"].sample,
-    graphic: graphics.sample,
-    color: colors.sample,
+    price: rand(39.0..89.0).round(2),   # keep or replace with fixed values
+    cut: cut,
+    size: size,
+    sleeves: sleeves,
+    graphic: graphic,
+    color: color,
     special_features: "Limited edition Eternia-approved collectible.",
-    stock: rand(3..15),
-    vendor: vendor
+    stock: rand(3..15),                 # keep or set fixed
+    vendor: vendor,
+    image_path: image                   # if you're storing the filename
   )
 end
 
