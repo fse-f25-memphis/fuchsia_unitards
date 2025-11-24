@@ -1,35 +1,46 @@
-<h1>My Wishlist</h1>
+<div class="container">
+  <h1 class="page-title">My Wishlist</h1>
 
-<% if @wishlist_items.any? %>
-  <div class="row_t cards-grid">
-    <% @wishlist_items.includes(:unitard).each do |item| %>
-      <div class="col-md-4">
-        <div class="card h-100">
+  <% if @wishlist_items.any? %>
+    <div class="cards-grid">
+      <% @wishlist_items.includes(:unitard).each do |item| %>
+        <div class="card">
           <div class="card-body">
-            <h5 class="card-title"><%= link_to item.unitard.name, item.unitard %></h5>
+            <h5 class="card-title">
+              <%= link_to item.unitard.name, item.unitard %>
+            </h5>
+            
             <p class="card-text">
               <strong><%= number_to_currency(item.unitard.price) %></strong><br>
               <small>
-                <%= item.unitard.cut %> |
-                <%= item.unitard.size %> |
+                <%= item.unitard.cut %> | 
+                <%= item.unitard.size %> | 
                 <%= item.unitard.color %>
               </small>
             </p>
           </div>
+
           <div class="card-footer card-footer-actions">
-            <%= button_to "Remove",
-                          wishlist_item_path(item),
-                          method: :delete,
-                          class: "btn btn-outline-danger btn-sm" %>
-            <%= button_to "Add to Cart",
-                          add_to_cart_path(unitard_id: item.unitard.id),
-                          method: :post,
-                          class: "btn btn-primary btn-sm" %>
+            <div class="action-buttons">
+              <%= button_to "Add to Cart",
+                            add_to_cart_path(unitard_id: item.unitard.id),
+                            method: :post,
+                            class: "btn btn-primary" %>
+              <%= button_to "Remove",
+                            wishlist_item_path(item),
+                            method: :delete,
+                            class: "btn btn-outline-danger btn-sm",
+                            form: { data: { turbo_confirm: "Remove from wishlist?" } } %>
+            </div>
           </div>
         </div>
-      </div>
-    <% end %>
-  </div>
-<% else %>
-  <p>You haven’t added any unitards to your wishlist yet.</p>
-<% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center" style="padding: 4rem 0;">
+      <h3 style="color: #6b7280; margin-bottom: 1rem;">Your wishlist is empty</h3>
+      <p style="color: #9ca3af; margin-bottom: 2rem;">Add items you love to your wishlist!</p>
+      <%= link_to "Browse Unitards", unitards_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

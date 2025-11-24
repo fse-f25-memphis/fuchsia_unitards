@@ -1047,3 +1047,9 @@ p:has(+ .btn-primary) {
     padding: 1.5rem;
   }
 }
+.cart-unitard-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px 0 0 16px;
+}
