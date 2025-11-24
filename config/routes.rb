@@ -16,7 +16,17 @@ Rails.application.routes.draw do
     delete "remove/:id", to: "carts#remove", as: :remove_item
   end
 
-  resources :orders, only: %i[index show new create]
+  resources :orders, only: [:index, :show, :create] do
+    collection do
+      get 'checkout'
+      post 'place_order'
+    end
+    member do
+      get 'payment'
+      post 'process_payment'
+      get 'success'
+    end
+  end
 
   resources :trades, only: %i[index show new create update]
 

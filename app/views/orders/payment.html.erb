@@ -1,0 +1,207 @@
+<div class="container" style="max-width: 800px; margin: 3rem auto;">
+  <div class="card">
+    <div class="card-body" style="padding: 2rem;">
+      <h1 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Select Payment Method</h1>
+      <p style="color: #6b7280; margin-bottom: 2rem;">Order #<%= @order.id %> - Total: <%= number_to_currency(@order.total) %></p>
+
+      <%= form_with url: process_payment_order_path(@order), method: :post, local: true, id: "payment-form" do |f| %>
+        
+        <div style="margin-bottom: 2rem;">
+          
+          <!-- Apple Pay Option -->
+          <div class="payment-option" onclick="selectPayment('apple_pay')" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s;">
+            <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+              <%= radio_button_tag :payment_method, 'apple_pay', false, id: 'payment_apple_pay', style: "margin-right: 1rem; width: 20px; height: 20px;" %>
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <svg style="width: 48px; height: 48px;" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                </svg>
+                <div>
+                  <p style="font-weight: 600; font-size: 1.125rem; margin: 0;">Apple Pay</p>
+                  <p style="color: #6b7280; font-size: 0.875rem; margin: 0;">Pay with Apple Pay</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Credit Card Option -->
+          <div class="payment-option" onclick="selectPayment('credit_card')" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s;">
+            <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+              <%= radio_button_tag :payment_method, 'credit_card', false, id: 'payment_credit_card', style: "margin-right: 1rem; width: 20px; height: 20px;" %>
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <svg style="width: 48px; height: 48px; color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                <div>
+                  <p style="font-weight: 600; font-size: 1.125rem; margin: 0;">Credit Card</p>
+                  <p style="color: #6b7280; font-size: 0.875rem; margin: 0;">Visa, Mastercard, Amex</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Debit Card Option -->
+          <div class="payment-option" onclick="selectPayment('debit_card')" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s;">
+            <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+              <%= radio_button_tag :payment_method, 'debit_card', false, id: 'payment_debit_card', style: "margin-right: 1rem; width: 20px; height: 20px;" %>
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <svg style="width: 48px; height: 48px; color: #10b981;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                <div>
+                  <p style="font-weight: 600; font-size: 1.125rem; margin: 0;">Debit Card</p>
+                  <p style="color: #6b7280; font-size: 0.875rem; margin: 0;">Pay directly from your bank</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- Card Details Form (Hidden by default) -->
+        <div id="card-details-form" style="display: none; margin-bottom: 2rem; padding: 1.5rem; background: #f9fafb; border-radius: 12px; border: 2px solid #e5e7eb;">
+          <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 1rem; color: var(--primary-purple);">💳 Enter Card Details</h3>
+          
+          <div class="mb-3">
+            <label class="form-label" style="font-weight: 500;">Card Number</label>
+            <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" style="font-weight: 500;">Expiry Date</label>
+              <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" maxlength="5">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" style="font-weight: 500;">CVV</label>
+              <input type="text" id="card-cvv" class="form-control" placeholder="123" maxlength="4">
+            </div>
+          </div>
+
+          <div class="mb-0">
+            <label class="form-label" style="font-weight: 500;">Cardholder Name</label>
+            <input type="text" id="card-name" class="form-control" placeholder="John Doe">
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div style="background: #f9fafb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 1rem;">Order Summary</h3>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: #6b7280;">Subtotal:</span>
+            <span style="font-weight: 500;"><%= number_to_currency(@order.total) %></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: #6b7280;">Shipping:</span>
+            <span style="font-weight: 500; color: #10b981;">FREE</span>
+          </div>
+          <div style="border-top: 1px solid #e5e7eb; padding-top: 0.75rem; margin-top: 0.75rem; display: flex; justify-content: space-between; font-size: 1.125rem; font-weight: 700;">
+            <span>Total:</span>
+            <span style="color: var(--primary-purple);"><%= number_to_currency(@order.total) %></span>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display: flex; gap: 1rem;">
+          <%= link_to "Back to Checkout", checkout_orders_path, class: "btn btn-secondary", style: "flex: 1;" %>
+          <%= f.submit "Complete Payment", id: "payment-submit-btn", class: "btn btn-primary", style: "flex: 1;", data: { disable_with: "Processing..." } %>
+        </div>
+
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+function selectPayment(paymentType) {
+  // Uncheck all radios first
+  document.querySelectorAll('input[name="payment_method"]').forEach(function(radio) {
+    radio.checked = false;
+  });
+  
+  // Check the selected one
+  document.getElementById('payment_' + paymentType).checked = true;
+  
+  // Show/hide card form
+  var cardForm = document.getElementById('card-details-form');
+  if (paymentType === 'credit_card' || paymentType === 'debit_card') {
+    cardForm.style.display = 'block';
+  } else {
+    cardForm.style.display = 'none';
+  }
+}
+
+// Form submission validation
+document.addEventListener('DOMContentLoaded', function() {
+  var form = document.getElementById('payment-form');
+  
+  // Card formatting
+  var cardNumber = document.getElementById('card-number');
+  if (cardNumber) {
+    cardNumber.addEventListener('input', function(e) {
+      var value = e.target.value.replace(/\s/g, '');
+      var formatted = value.match(/.{1,4}/g);
+      e.target.value = formatted ? formatted.join(' ') : value;
+    });
+  }
+  
+  var cardExpiry = document.getElementById('card-expiry');
+  if (cardExpiry) {
+    cardExpiry.addEventListener('input', function(e) {
+      var value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      e.target.value = value;
+    });
+  }
+  
+  var cardCvv = document.getElementById('card-cvv');
+  if (cardCvv) {
+    cardCvv.addEventListener('input', function(e) {
+      e.target.value = e.target.value.replace(/\D/g, '');
+    });
+  }
+  
+  // Form validation
+  form.addEventListener('submit', function(e) {
+    var selected = document.querySelector('input[name="payment_method"]:checked');
+    
+    if (!selected) {
+      e.preventDefault();
+      alert('Please select a payment method');
+      return false;
+    }
+    
+    var paymentMethod = selected.value;
+    
+    if (paymentMethod === 'credit_card' || paymentMethod === 'debit_card') {
+      var number = document.getElementById('card-number').value.replace(/\s/g, '');
+      var expiry = document.getElementById('card-expiry').value;
+      var cvv = document.getElementById('card-cvv').value;
+      var name = document.getElementById('card-name').value;
+      
+      if (!number || number.length < 13) {
+        e.preventDefault();
+        alert('Please enter a valid card number');
+        return false;
+      }
+      if (!expiry || expiry.length < 5) {
+        e.preventDefault();
+        alert('Please enter expiry date (MM/YY)');
+        return false;
+      }
+      if (!cvv || cvv.length < 3) {
+        e.preventDefault();
+        alert('Please enter CVV');
+        return false;
+      }
+      if (!name || name.trim().length < 3) {
+        e.preventDefault();
+        alert('Please enter cardholder name');
+        return false;
+      }
+    }
+  });
+});
+</script>

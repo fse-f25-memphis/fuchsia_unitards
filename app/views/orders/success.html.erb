@@ -1,0 +1,141 @@
+<div class="container" style="max-width: 900px; margin: 3rem auto;">
+  
+  <!-- Success Message -->
+  <div style="background: #dcfce7; border: 2px solid #10b981; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; text-align: center;">
+    <svg style="width: 80px; height: 80px; color: #10b981; margin: 0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <h1 style="color: #15803d; font-size: 2rem; margin-bottom: 0.5rem;">Order Successfully Placed! 🎉</h1>
+    <p style="color: #15803d; font-size: 1.125rem;">Thank you for your purchase!</p>
+    <p style="color: #6b7280; margin-top: 0.5rem;">Order #<%= @order.id %></p>
+  </div>
+
+  <!-- Order Details -->
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-body" style="padding: 2rem;">
+      <h2 style="color: var(--primary-purple); font-size: 1.5rem; margin-bottom: 1.5rem;">Order Summary</h2>
+      
+      <!-- Order Info -->
+      <div class="row" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb;">
+        <div class="col-md-6" style="margin-bottom: 1rem;">
+          <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Order Date</p>
+          <p style="font-weight: 600; margin: 0;"><%= @order.created_at.strftime("%B %d, %Y") %></p>
+        </div>
+        <div class="col-md-6" style="margin-bottom: 1rem;">
+          <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Order Number</p>
+          <p style="font-weight: 600; margin: 0;">#<%= @order.id %></p>
+        </div>
+        <div class="col-md-6">
+          <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Payment Method</p>
+          <p style="font-weight: 600; margin: 0; text-transform: capitalize;"><%= @order.payment_method.gsub('_', ' ') %></p>
+        </div>
+        <div class="col-md-6">
+          <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Payment Status</p>
+          <p style="font-weight: 600; margin: 0; color: #10b981; text-transform: capitalize;"><%= @order.payment_status %></p>
+        </div>
+      </div>
+
+      <!-- Shipping Address -->
+      <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb;">
+        <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 1rem;">Shipping Address</h3>
+        <div style="color: #4b5563;">
+          <p style="margin: 0;"><%= @order.shipping_street %></p>
+          <p style="margin: 0;"><%= @order.shipping_city %>, <%= @order.shipping_state %> <%= @order.shipping_zip %></p>
+          <p style="margin: 0;"><%= @order.shipping_country %></p>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 1rem;">Items Ordered</h3>
+        <% @order.order_items.each do |item| %>
+          <div style="display: flex; align-items: center; gap: 1rem; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid #e5e7eb;">
+            <% if item.unitard.respond_to?(:image) && item.unitard.image.present? %>
+            <%= image_tag item.unitard.image, style: "width: 80px; height: 80px; object-fit: cover; border-radius: 8px;" %>
+            <% else %>
+            <div style="width: 80px; height: 80px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <span style="color: #9ca3af; font-size: 0.75rem;">No image</span>
+            </div>
+            <% end %>
+            
+            <div style="flex-grow: 1;">
+              <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 0.25rem;"><%= item.unitard.name %></h4>
+              <p style="color: #6b7280; font-size: 0.875rem; margin: 0;">
+                <%= item.unitard.size %> | <%= item.unitard.color %>
+              </p>
+              <p style="color: #6b7280; font-size: 0.875rem; margin: 0;">Quantity: <%= item.quantity %></p>
+            </div>
+            
+            <div style="text-align: right;">
+              <p style="font-weight: 600; color: var(--primary-purple); margin: 0;"><%= number_to_currency(item.price * item.quantity) %></p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Total -->
+      <div style="padding-top: 1rem; border-top: 2px solid #e5e7eb;">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.25rem; font-weight: 700;">
+          <span>Total Paid:</span>
+          <span style="color: var(--primary-purple);"><%= number_to_currency(@order.total) %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Steps -->
+  <div style="background: #f3f4f6; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+    <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 1rem;">What's Next?</h3>
+    <ul style="list-style: none; padding: 0; margin: 0; color: #4b5563;">
+      <li style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <svg style="width: 20px; height: 20px; color: var(--primary-purple); margin-top: 0.125rem; flex-shrink: 0;" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <span>You'll receive an order confirmation email shortly</span>
+      </li>
+      <li style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <svg style="width: 20px; height: 20px; color: var(--primary-purple); margin-top: 0.125rem; flex-shrink: 0;" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <span>We'll send you tracking information once your order ships</span>
+      </li>
+      <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+        <svg style="width: 20px; height: 20px; color: var(--primary-purple); margin-top: 0.125rem; flex-shrink: 0;" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <span>Expected delivery: 5-7 business days</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 1rem; justify-content: center;">
+    <%= link_to "View All Orders", orders_path, class: "btn btn-primary" %>
+    <%= link_to "Continue Shopping", unitards_path, class: "btn btn-secondary" %>
+  </div>
+
+</div>
+
+<!-- Auto-redirect message after 3 seconds -->
+<div id="redirect-message" style="text-align: center; color: #6b7280; margin-top: 1rem; display: none;">
+  Redirecting to My Orders in <span id="countdown">10</span> seconds...
+</div>
+
+<script>
+  // Auto-redirect after 10 seconds
+  let countdown = 10;
+  
+  setTimeout(function() {
+    document.getElementById('redirect-message').style.display = 'block';
+    
+    const interval = setInterval(function() {
+      countdown--;
+      document.getElementById('countdown').textContent = countdown;
+      
+      if (countdown === 0) {
+        clearInterval(interval);
+        window.location.href = '<%= orders_path %>';
+      }
+    }, 1000);
+  }, 2000);
+</script>

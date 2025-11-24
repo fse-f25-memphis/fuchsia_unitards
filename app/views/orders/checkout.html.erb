@@ -1,0 +1,105 @@
+<h1>Checkout</h1>
+
+<p>Confirm your details to complete the order.</p>
+
+<%= form_with model: @order, url: place_order_orders_path, local: true do |f| %>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4>Gift Options</h4>
+      
+      <div class="form-check mb-2">
+        <%= f.check_box :gift, class: "form-check-input", id: "gift-check" %>
+        <%= f.label :gift, "Send this order as a gift", class: "form-check-label" %>
+      </div>
+
+      <div id="gift-fields" style="display: none;">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <%= f.label :recipient_name, "Recipient Name" %>
+            <%= f.text_field :recipient_name, class: "form-control" %>
+          </div>
+          <div class="col-md-6 mb-3">
+            <%= f.label :recipient_email, "Recipient Email" %>
+            <%= f.email_field :recipient_email, class: "form-control" %>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <%= f.label :gift_message, "Gift Message" %>
+          <%= f.text_area :gift_message, rows: 3, class: "form-control" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shipping Address Section -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4>Shipping Address</h4>
+      
+      <div class="mb-3">
+        <%= f.label :shipping_street, "Street Address" %>
+        <%= f.text_field :shipping_street, required: true, placeholder: "123 Main Street, Apt 4B", class: "form-control" %>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <%= f.label :shipping_city, "City" %>
+          <%= f.text_field :shipping_city, required: true, placeholder: "Olive Branch", class: "form-control" %>
+        </div>
+        <div class="col-md-6 mb-3">
+          <%= f.label :shipping_state, "State" %>
+          <%= f.text_field :shipping_state, required: true, placeholder: "Mississippi", class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <%= f.label :shipping_zip, "ZIP Code" %>
+          <%= f.text_field :shipping_zip, required: true, placeholder: "38654", class: "form-control" %>
+        </div>
+        <div class="col-md-6 mb-3">
+          <%= f.label :shipping_country, "Country" %>
+          <%= f.text_field :shipping_country, required: true, value: "United States", class: "form-control" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Items Section -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4>Review Items</h4>
+      <% @cart.cart_items.includes(:unitard).each do |item| %>
+        <p>
+          <strong><%= item.unitard.name %></strong>
+          × <%= item.quantity %> =
+          <%= number_to_currency(item.unitard.price * item.quantity) %>
+        </p>
+      <% end %>
+      
+      <hr>
+      <h5>Total: <%= number_to_currency(@total) %></h5>
+    </div>
+  </div>
+
+  <%= f.submit "Proceed to Payment", class: "btn btn-primary" %>
+<% end %>
+
+<script>
+  // Toggle gift fields visibility
+  document.addEventListener('DOMContentLoaded', function() {
+    const giftCheckbox = document.getElementById('gift-check');
+    const giftFields = document.getElementById('gift-fields');
+    
+    if (giftCheckbox) {
+      giftCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          giftFields.style.display = 'block';
+        } else {
+          giftFields.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
