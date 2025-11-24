@@ -1,0 +1,64 @@
+<div class="container">
+  <h1 class="page-title">Modify Trade Proposal #<%= @trade.id %></h1>
+
+  <%= form_with model: @trade, url: trade_path(@trade), method: :patch, local: true do |f| %>
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="card-body">
+        <p style="margin: 0;">
+          <strong>Trading with:</strong> <%= @trade.recipient.name.presence || @trade.recipient.email %>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card" style="height: 100%;">
+          <div class="card-body">
+            <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--primary-purple);">Your Unitards (Offered)</h3>
+            <% if @owned_unitards.any? %>
+              <% current_proposer_ids = @trade.trade_items.where(side: "proposer").pluck(:unitard_id) %>
+              <% @owned_unitards.each do |u| %>
+                <div style="padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                  <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                    <%= check_box_tag "proposer_unitard_ids[]", u.id, current_proposer_ids.include?(u.id), style: "width: 20px; height: 20px; margin-right: 0.75rem; cursor: pointer;" %>
+                    <span style="font-weight: 500;"><%= u.name %></span>
+                    <small style="color: var(--text-gray); margin-left: 0.5rem;">(<%= u.size %>, <%= u.color %>)</small>
+                  </label>
+                </div>
+              <% end %>
+            <% else %>
+              <p style="color: var(--text-gray);">You don't own any unitards.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card" style="height: 100%;">
+          <div class="card-body">
+            <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--primary-purple);">Request Items from Catalog</h3>
+            <div style="max-height: 400px; overflow-y: auto;">
+              <% current_recipient_ids = @trade.trade_items.where(side: "recipient").pluck(:unitard_id) %>
+              <% @all_unitards.each do |u| %>
+                <div style="padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                  <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                    <%= check_box_tag "recipient_unitard_ids[]", u.id, current_recipient_ids.include?(u.id), style: "width: 20px; height: 20px; margin-right: 0.75rem; cursor: pointer;" %>
+                    <div style="flex: 1;">
+                      <span style="font-weight: 500;"><%= u.name %></span>
+                      <small style="color: var(--text-gray); display: block;"><%= u.size %> | <%= u.color %></small>
+                    </div>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+      <%= f.submit "Update Trade Proposal", class: "btn btn-primary" %>
+      <%= link_to "Cancel", @trade, class: "btn btn-outline-secondary" %>
+    </div>
+  <% end %>
+</div>

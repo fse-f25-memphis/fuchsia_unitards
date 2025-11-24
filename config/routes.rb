@@ -45,4 +45,9 @@ Rails.application.routes.draw do
   end
   
   resources :reviews, only: [:create]
+  resources :trades, only: %i[index show new create edit update] do
+  member do
+    patch :cancel
+  end
+end
 end

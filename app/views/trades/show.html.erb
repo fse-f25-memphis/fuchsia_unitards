@@ -22,7 +22,15 @@
         <div class="col-md-4">
           <p style="margin-bottom: 0.5rem;">
             <strong style="color: var(--text-gray); font-size: 0.875rem;">Status:</strong><br>
-            <% status_color = @trade.status == 'pending' ? '#f59e0b' : (@trade.status == 'accepted' ? '#10b981' : '#ef4444') %>
+            <% 
+              status_colors = {
+                'pending' => '#f59e0b',
+                'accepted' => '#10b981',
+                'rejected' => '#ef4444',
+                'cancelled' => '#6b7280'
+              }
+              status_color = status_colors[@trade.status] || '#6b7280'
+            %>
             <span style="display: inline-block; padding: 0.5rem 1rem; background: <%= status_color %>; color: white; border-radius: 12px; font-weight: 600; font-size: 1rem;">
               <%= @trade.status.capitalize %>
             </span>
@@ -31,6 +39,23 @@
       </div>
     </div>
   </div>
+
+  <!-- Proposer Actions: Modify or Cancel (only for pending trades) -->
+  <% if current_user.id == @trade.proposer_id && @trade.status == "pending" %>
+    <div class="card" style="margin-bottom: 2rem; border: 2px solid var(--primary-purple);">
+      <div class="card-body">
+        <h4 style="margin-bottom: 1rem;">Your Trade Actions</h4>
+        <div style="display: flex; gap: 1rem;">
+          <%= link_to "Modify Trade", edit_trade_path(@trade), class: "btn btn-primary" %>
+          <%= button_to "Cancel Trade",
+                        cancel_trade_path(@trade),
+                        method: :patch,
+                        class: "btn btn-outline-danger",
+                        data: { turbo_confirm: "Are you sure you want to cancel this trade?" } %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 
   <div class="row">
     <div class="col-md-6">
@@ -78,6 +103,7 @@
     </div>
   </div>
 
+  <!-- Recipient Actions: Accept or Reject -->
   <% if current_user.id == @trade.recipient_id && @trade.status == "pending" %>
     <div class="card" style="margin-top: 2rem; border: 2px solid var(--primary-purple);">
       <div class="card-body">

@@ -29,7 +29,7 @@
                 </div>
               <% end %>
             <% else %>
-              <p style="color: var(--text-gray);">You don't own any unitards yet.</p>
+              <p style="color: var(--text-gray);">You don't own any unitards yet. Complete an order first.</p>
             <% end %>
           </div>
         </div>
@@ -38,15 +38,30 @@
       <div class="col-md-6">
         <div class="card" style="height: 100%;">
           <div class="card-body">
-            <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--primary-purple);">Desired Unitards</h3>
+            <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--primary-purple);">Request Items from Catalog</h3>
             <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 1.5rem;">
-              Enter the IDs of unitards you want from the recipient.
+              Browse and select any unitards from the catalog that you want to request.
             </p>
-            <%= text_area_tag "recipient_unitard_ids[]", nil,
-                  class: "form-control",
-                  placeholder: "Enter unitard IDs (one per line)",
-                  rows: 8,
-                  style: "resize: vertical;" %>
+
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 0.5rem;">
+              <% if @all_unitards.any? %>
+                <% @all_unitards.each do |u| %>
+                  <div style="padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem; transition: all 0.2s;">
+                    <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                      <%= check_box_tag "recipient_unitard_ids[]", u.id, false, style: "width: 20px; height: 20px; margin-right: 0.75rem; cursor: pointer;", id: "recip_#{u.id}" %>
+                      <div style="flex: 1;">
+                        <span style="font-weight: 500;"><%= u.name %></span>
+                        <small style="color: var(--text-gray); display: block;">
+                          <%= u.size %> | <%= u.color %> | <%= number_to_currency(u.price) %>
+                        </small>
+                      </div>
+                    </label>
+                  </div>
+                <% end %>
+              <% else %>
+                <p style="color: var(--text-gray);">No unitards available.</p>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>

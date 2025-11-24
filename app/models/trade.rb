@@ -4,5 +4,5 @@ class Trade < ApplicationRecord
   has_many :trade_items, dependent: :destroy
   has_many :unitards, through: :trade_items
 
-  enum status: { pending: "pending", accepted: "accepted", rejected: "rejected" }, _prefix: true
+  enum status: { pending: "pending", accepted: "accepted", rejected: "rejected", cancelled: "cancelled" }, _prefix: true
 end
