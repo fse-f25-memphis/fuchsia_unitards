@@ -35,19 +35,20 @@ cart3 = Cart.create!(user: customer3)
 puts "Creating unitards..."
 
 unitard_data = [
-  ["He-Man Power Suit 1",              "unitards/suit1.jpg",  "Mens",  "XL",  "Sleeveless",      "He-Man",           "Red"],
-  ["He-Man Power Suit 2",              "unitards/suit2.jpg",  "Mens",  "L",   "Short Sleeved",   "He-Man",           "Blue"],
-  ["She-Ra Power Suit 3",              "unitards/suit3.jpg",  "Womens","M",   "Sleeveless",      "She-Ra",           "Gold"],
-  ["She-Ra Power Suit 4",              "unitards/suit4.jpg",  "Womens","S",   "Long Sleeved",    "She-Ra",           "Pink"],
-  ["Castle Grayskull Power Suit 5",    "unitards/suit5.jpg",  "Mens",  "XL",  "Short Sleeved",   "Castle Grayskull", "Green"],
-  ["Battle Cat Power Suit 6",          "unitards/suit6.jpg",  "Mens",  "L",   "Sleeveless",      "Battle Cat",       "Green"],
-  ["Skeletor Power Suit 7",            "unitards/suit7.jpg",  "Mens",  "XXL", "Short Sleeved",   "Skeletor",         "Purple"],
+  ["He-Man Power Suit 1",              "unitards/suit1.jpg",  "Child", "XL",  "Sleeveless",      "Battle Cat",       "Blue"],
+  ["He-Man Power Suit 2",              "unitards/suit2.jpg",  "Child", "L",   "Sleeveless",      "Battle Cat",       "Red"],
+  ["She-Ra Power Suit 3",              "unitards/suit3.jpg",  "Child", "XL",  "Sleeveless",      "Skeletor",         "Black"],
+  ["She-Ra Power Suit 4",              "unitards/suit4.jpg",  "Child", "M",   "Short Sleeved",   "Man-At-Arms",      "Green"],
+  ["Castle Grayskull Power Suit 5",    "unitards/suit5.jpg",  "Mens",  "XXL", "Sleeveless",      "Man-At-Arms",      "Green"],
+  ["Battle Cat Power Suit 6",          "unitards/suit6.jpg",  "Child", "S",   "Short Sleeved",   "Battle Cat",       "Green"],
+  ["Skeletor Power Suit 7",            "unitards/suit7.jpg",  "Mens",  "S",   "Sleeveless",      "She-Ra",           "Purple"],
   ["Castle Grayskull Power Suit 8",    "unitards/suit8.jpg",  "Mens",  "XXL", "Short Sleeved",   "Castle Grayskull", "Blue"],
   ["Man-At-Arms Power Suit 9",         "unitards/suit9.jpg",  "Child", "S",   "Long Sleeved",    "Castle Grayskull", "Blue"],
   ["Man-At-Arms Power Suit 10",        "unitards/suit10.jpg", "Child", "M",   "Sleeveless",      "Skeletor",         "Purple"],
   ["He-Man Power Suit 11",             "unitards/suit11.jpg", "Child", "S",   "Sleeveless",      "She-Ra",           "Red"],
   ["Man-At-Arms Power Suit 12",        "unitards/suit12.jpg", "Child", "S",   "Sleeveless",      "Man-At-Arms",      "Black"]
 ]
+
 
 unitard_data.each do |name, image, cut, size, sleeves, graphic, color|
   Unitard.create!(
