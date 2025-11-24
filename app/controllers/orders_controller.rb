@@ -28,11 +28,20 @@ class OrdersController < ApplicationController
 
     @cart_items = @cart.cart_items.includes(:unitard)
     
+    # Calculate subtotal
+    subtotal = @cart_items.sum { |item| item.unitard.price * item.quantity }
+    
+    # Calculate tax (10%)
+    tax = subtotal * 0.10
+    
+    # Calculate total with tax
+    total_with_tax = subtotal + tax
+    
     # Create order with shipping address
     @order = current_user.orders.new(order_params)
     @order.status = 'pending'
     @order.payment_status = 'pending'
-    @order.total = @cart_items.sum { |item| item.unitard.price * item.quantity }
+    @order.total = total_with_tax
 
     ActiveRecord::Base.transaction do
       if @order.save
@@ -52,7 +61,7 @@ class OrdersController < ApplicationController
         redirect_to payment_order_path(@order)
       else
         flash.now[:alert] = "Please fill in all required address fields."
-        @total = @cart_items.sum { |item| item.unitard.price * item.quantity }
+        @total = total_with_tax
         render :checkout, status: :unprocessable_entity
       end
     end
@@ -84,11 +93,12 @@ class OrdersController < ApplicationController
     # Simulate payment processing
     sleep(1) # Simulate processing delay
 
-    # Update order with payment info
+    # Update order with payment info and set to completed for review
     @order.update!(
       payment_method: payment_method,
       payment_status: 'paid',
-      status: 'paid'
+      status: 'completed',  # Set to completed so review button appears
+      tracking_number: "TRACK#{Time.now.to_i}#{rand(1000..9999)}"  # Generate tracking number
     )
 
     # Clear the cart

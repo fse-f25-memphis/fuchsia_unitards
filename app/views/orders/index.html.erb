@@ -1,30 +1,62 @@
-<h1>My Orders</h1>
+<div class="container">
+  <h1 class="page-title">My Orders</h1>
 
-<% if @orders.any? %>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Order #</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Total</th>
-        <th>Gift?</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @orders.each do |order| %>
-        <tr>
-          <td><%= order.id %></td>
-          <td><%= order.created_at.strftime("%Y-%m-%d") %></td>
-          <td><span class="badge bg-secondary"><%= order.status %></span></td>
-          <td><%= number_to_currency(order.total) %></td>
-          <td><%= order.gift? ? "🎁" : "-" %></td>
-          <td><%= link_to "View", order_path(order), class: "btn btn-outline-primary btn-sm" %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>You have no orders yet.</p>
-<% end %>
+  <% if @orders.any? %>
+    <div class="card" style="overflow: hidden;">
+      <table style="width: 100%; border-collapse: collapse; margin: 0;">
+        <thead style="background: linear-gradient(135deg, #fafafa, #f3f4f6); border-bottom: 2px solid var(--border-color);">
+          <tr>
+            <th style="padding: 1rem; text-align: left; font-weight: 600;">Order #</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600;">Date</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600;">Status</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600;">Total</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600;">Gift?</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 1rem;"><strong>#<%= order.id %></strong></td>
+              <td style="padding: 1rem;"><%= order.created_at.strftime("%Y-%m-%d") %></td>
+              <td style="padding: 1rem;">
+                <% 
+                  status_colors = {
+                    'pending' => '#f59e0b',
+                    'paid' => '#3b82f6',
+                    'shipped' => '#8b5cf6',
+                    'completed' => '#10b981',
+                    'cancelled' => '#ef4444'
+                  }
+                  status_color = status_colors[order.status] || '#6b7280'
+                %>
+                <span style="display: inline-block; padding: 0.25rem 0.75rem; background: <%= status_color %>; color: white; border-radius: 12px; font-size: 0.875rem; font-weight: 600;">
+                  <%= order.status.capitalize %>
+                </span>
+              </td>
+              <td style="padding: 1rem; font-weight: 600;"><%= number_to_currency(order.total) %></td>
+              <td style="padding: 1rem; font-size: 1.25rem;"><%= order.gift? ? "🎁" : "-" %></td>
+              <td style="padding: 1rem;">
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <%= link_to "View", order_path(order), class: "btn btn-outline-primary btn-sm" %>
+                  
+                  <% if order.status == "completed" %>
+                    <span style="display: inline-block; padding: 0.35rem 0.75rem; background: #10b981; color: white; border-radius: 8px; font-size: 0.75rem; font-weight: 600;">
+                      ✍️ Review Available
+                    </span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="text-center" style="padding: 4rem 0;">
+      <h3 style="color: #6b7280; margin-bottom: 1rem;">You have no orders yet</h3>
+      <p style="color: #9ca3af; margin-bottom: 2rem;">Start shopping to place your first order!</p>
+      <%= link_to "Browse Unitards", unitards_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
