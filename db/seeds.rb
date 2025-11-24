@@ -61,8 +61,7 @@ unitard_data.each do |name, image, cut, size, sleeves, graphic, color|
     color: color,
     special_features: "Limited edition Eternia-approved collectible.",
     stock: rand(3..15),                 # keep or set fixed
-    vendor: vendor,
-    image_path: image                   # if you're storing the filename
+    vendor: vendor                # if you're storing the filename
   )
 end
 
