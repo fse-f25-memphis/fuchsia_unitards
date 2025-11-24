@@ -1,64 +1,79 @@
-<div class="container">
+<div class="container" style="max-width: 1200px;">
   <h1 class="page-title">Shopping Cart</h1>
 
   <% if @cart.cart_items.any? %>
     <div class="row">
       <div class="col-md-8">
         <% @cart.cart_items.includes(:unitard).each do |item| %>
-          <div class="card cart-item-card" style="margin-bottom: 1.5rem;">
-            <div class="row g-0">
-              <div class="col-md-3" style="max-height: 200px; overflow: hidden;">
-                <%= image_tag unitard_image(item.unitard),
-                              alt: item.unitard.name,
-                              style: "width: 100%; height: 200px; object-fit: cover; border-radius: 16px 0 0 16px;" %>
-              </div>
-              
-              <div class="col-md-9">
-                <div class="card-body" style="padding: 1.5rem;">
-                  <h5 class="card-title" style="margin-bottom: 0.75rem;">
-                    <%= link_to item.unitard.name, item.unitard %>
-                  </h5>
-                  <p style="margin-bottom: 0.5rem;">
-                    <strong style="font-size: 1.5rem; color: var(--primary-purple);"><%= number_to_currency(item.unitard.price) %></strong>
-                  </p>
-                  <p style="margin-bottom: 1rem; color: var(--text-gray); font-size: 0.95rem;">
-                    <%= item.unitard.cut %> | <%= item.unitard.size %> | <%= item.unitard.color %>
-                  </p>
+          <div style="display: flex; align-items: center; background: white; border-radius: 12px; padding: 0.75rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            
+            <div style="width: 70px; height: 70px; flex-shrink: 0;">
+              <%= image_tag unitard_image(item.unitard), style: "width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" %>
+            </div>
+            
+            <div style="flex: 1; padding: 0 1rem; min-width: 0;">
+              <h6 style="margin: 0 0 0.25rem 0; font-size: 0.9rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <%= item.unitard.name %>
+              </h6>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--primary-purple); font-weight: 700;"><%= number_to_currency(item.unitard.price) %></p>
+              <p style="margin: 0; color: var(--text-gray); font-size: 0.75rem;"><%= item.unitard.cut %> | <%= item.unitard.size %></p>
+            </div>
 
-                  <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
-                    <%= form_with model: item,
-                                  url: update_item_cart_path(item),
-                                  method: :patch,
-                                  local: true,
-                                  style: "display: flex; gap: 0.5rem; align-items: flex-end;" do |f| %>
-                      <div>
-                        <%= f.label :quantity, "Qty:", style: "display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem;" %>
-                        <%= f.number_field :quantity, min: 1, class: "form-control", style: "width: 70px;" %>
-                      </div>
-                      <%= f.submit "Update", class: "btn btn-outline-primary btn-sm" %>
-                    <% end %>
-
-                    <%= button_to "Remove",
-                                  remove_item_cart_path(item),
-                                  method: :delete,
-                                  data: { turbo_confirm: "Remove?" },
-                                  class: "btn btn-outline-danger btn-sm" %>
-                  </div>
-                </div>
-              </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <%= form_with model: item, url: update_item_cart_path(item), method: :patch, local: true, style: "display: flex; gap: 0.25rem; align-items: center;" do |f| %>
+                <span style="font-size: 0.75rem;">Qty:</span>
+                <%= f.number_field :quantity, min: 1, style: "width: 45px; height: 30px; padding: 0.25rem; border: 2px solid #e5e7eb; border-radius: 6px; text-align: center;" %>
+                <%= f.submit "Update", style: "padding: 0.35rem 0.6rem; font-size: 0.75rem; height: 30px; background: white; border: 2px solid var(--primary-purple); color: var(--primary-purple); border-radius: 8px; cursor: pointer;" %>
+              <% end %>
+              <%= button_to "×", remove_item_cart_path(item), method: :delete, data: { turbo_confirm: "Remove?" }, style: "width: 30px; height: 30px; padding: 0; font-size: 1.25rem; background: white; border: 2px solid #ef4444; color: #ef4444; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;" %>
             </div>
           </div>
         <% end %>
       </div>
 
       <div class="col-md-4">
-        <div class="card order-summary-card">
+        <div class="card order-summary-card" style="position: sticky; top: 100px;">
           <div class="card-body">
             <h4 style="margin-bottom: 1.5rem;">Order Summary</h4>
-            <% total = @cart.cart_items.includes(:unitard).sum { |i| i.quantity * i.unitard.price } %>
-            <p style="font-size: 1.25rem; margin-bottom: 2rem;">
-              <strong>Total:</strong> <%= number_to_currency(total) %>
-            </p>
+            
+            <!-- Item List with Quantities -->
+            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border-color);">
+              <% @cart.cart_items.includes(:unitard).each do |item| %>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                  <span style="font-size: 0.9rem; color: var(--text-gray); flex: 1;">
+                    <strong style="color: var(--primary-purple);"><%= item.quantity %>×</strong> <%= item.unitard.name.truncate(20) %>
+                  </span>
+                  <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-dark);">
+                    <%= number_to_currency(item.quantity * item.unitard.price) %>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Subtotal, Tax, and Total -->
+            <% subtotal = @cart.cart_items.includes(:unitard).sum { |i| i.quantity * i.unitard.price } %>
+            <% tax = subtotal * 0.10 %>
+            <% total = subtotal + tax %>
+
+            <div style="margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-size: 1rem; color: var(--text-gray);">Subtotal:</span>
+                <span style="font-size: 1rem; font-weight: 600;"><%= number_to_currency(subtotal) %></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border-color);">
+                <span style="font-size: 1rem; color: var(--text-gray);">Tax (10%):</span>
+                <span style="font-size: 1rem; font-weight: 600;"><%= number_to_currency(tax) %></span>
+              </div>
+            </div>
+
+            <!-- Final Total -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <span style="font-size: 1.25rem; font-weight: 700;">Total:</span>
+              <span style="font-size: 1.75rem; font-weight: 700; color: var(--primary-purple);">
+                <%= number_to_currency(total) %>
+              </span>
+            </div>
+
             <%= link_to "Proceed to Checkout", new_order_path, class: "btn btn-primary w-100" %>
           </div>
         </div>
