@@ -20,9 +20,9 @@
             </div>
 
             <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <%= form_with model: item, url: update_item_cart_path(item), method: :patch, local: true, style: "display: flex; gap: 0.25rem; align-items: center;" do |f| %>
+              <%= form_with url: update_item_cart_path(item), method: :patch, data: { turbo: false }, style: "display: flex; gap: 0.25rem; align-items: center;" do |f| %>
                 <span style="font-size: 0.75rem;">Qty:</span>
-                <%= f.number_field :quantity, min: 1, style: "width: 45px; height: 30px; padding: 0.25rem; border: 2px solid #e5e7eb; border-radius: 6px; text-align: center;" %>
+                <%= f.number_field "cart_item[quantity]", value: item.quantity, min: 1, style: "width: 45px; height: 30px; padding: 0.25rem; border: 2px solid #e5e7eb; border-radius: 6px; text-align: center;" %>
                 <%= f.submit "Update", style: "padding: 0.35rem 0.6rem; font-size: 0.75rem; height: 30px; background: white; border: 2px solid var(--primary-purple); color: var(--primary-purple); border-radius: 8px; cursor: pointer;" %>
               <% end %>
               <%= button_to "×", remove_item_cart_path(item), method: :delete, data: { turbo_confirm: "Remove?" }, style: "width: 30px; height: 30px; padding: 0; font-size: 1.25rem; background: white; border: 2px solid #ef4444; color: #ef4444; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;" %>
