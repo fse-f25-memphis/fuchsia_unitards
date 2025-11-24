@@ -32,14 +32,54 @@
       </div>
 
       <div class="col-md-4">
-        <div class="card order-summary-card" style="position: sticky; top: 100px;">
-          <div class="card-body">
-            <h4 style="margin-bottom: 1.5rem;">Order Summary</h4>
-            <% total = @cart.cart_items.includes(:unitard).sum { |i| i.quantity * i.unitard.price } %>
-            <p style="font-size: 1.25rem; margin-bottom: 2rem;">
-              <strong>Total:</strong> <%= number_to_currency(total) %>
-            </p>
-        <%= link_to "Proceed to Checkout", checkout_orders_path, class: "btn btn-primary w-100" %>
+        <div class="card order-summary-card">
+          <div class="card-body" style="padding: 1.25rem;">
+            <h4 style="text-align: center; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">Order Summary</h4>
+            
+            <% subtotal = 0 %>
+            <% total_tax = 0 %>
+            
+            <!-- Individual Items with Tax -->
+            <div style="margin-bottom: 0.75rem;">
+              <% @cart.cart_items.includes(:unitard).each do |item| %>
+                <% item_total = item.quantity * item.unitard.price %>
+                <% item_tax = item_total * 0.10 %>
+                <% subtotal += item_total %>
+                <% total_tax += item_tax %>
+                
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);">
+                  <div style="font-size: 0.85rem; color: var(--text-dark); margin-bottom: 0.25rem; font-weight: 600;">
+                    <%= item.unitard.name %>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-gray); margin-bottom: 0.15rem;">
+                    <span><%= item.quantity %>x <%= number_to_currency(item.unitard.price) %></span>
+                    <span><%= number_to_currency(item_total) %></span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-light);">
+                    <span>Tax (10%)</span>
+                    <span><%= number_to_currency(item_tax) %></span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            
+            <!-- Totals Section -->
+            <div style="padding-top: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-gray);">
+                <span>Subtotal:</span>
+                <span><%= number_to_currency(subtotal) %></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--text-gray);">
+                <span>Total Tax:</span>
+                <span><%= number_to_currency(total_tax) %></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding-top: 0.75rem; border-top: 2px solid var(--border-color); font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">
+                <span style="color: var(--text-dark);">Total:</span>
+                <span style="color: var(--primary-purple);"><%= number_to_currency(subtotal + total_tax) %></span>
+              </div>
+            </div>
+            
+            <%= link_to "Proceed to Checkout", checkout_orders_path, class: "btn btn-primary w-100" %>
           </div>
         </div>
       </div>
